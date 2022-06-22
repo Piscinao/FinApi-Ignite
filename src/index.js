@@ -1,4 +1,5 @@
 const express = require("express");
+const createApplication = require("express/lib/express");
 const { v4: uuidv4 } = require("uuid");
 const app = express();
 
@@ -133,6 +134,7 @@ app.get("/statement/date",  verifyIfExistsAccountCPF, (request, response) => {
   return response.json(statement);
 });
 
+// atualizar nome da conta
 app.put("/account", verifyIfExistsAccountCPF, (request, response) => {
   const { name } = request.body;
   const { customer } = request;
@@ -142,10 +144,29 @@ app.put("/account", verifyIfExistsAccountCPF, (request, response) => {
   return response.status(201).send();
 });
 
+// verificar conta
 app.get("/account", verifyIfExistsAccountCPF, (request, response) => {
   const { customer } = request;
 
   return response.json(customer);
+});
+
+app.delete("/account", verifyIfExistsAccountCPF, (request, response) => {
+  const { customer } = request;
+
+  customers.splice(customer, 1);
+
+  return response.status(200).json(customers);
+
+});
+
+// mostra o saldo total atual
+app.get("/balance", verifyIfExistsAccountCPF, (request, response) => {
+  const { customer } = request;
+
+  const balance = getBalance(customer.statement);
+
+  return response.json(balance);
 });
 
 app.listen(3333);
